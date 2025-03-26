@@ -1,24 +1,26 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
-import Datepicker from "react-tailwindcss-datepicker";
 import { useNavigate } from "react-router-dom";
+import { DatePicker, Space } from "antd";
+import dayjs from "dayjs"; // Required by Ant Design DatePicker
 
 const ChooseTime = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
-  const handleDateChange = (date: any) => {
+  const handleDateChange = (date: dayjs.Dayjs | null, dateString: string) => {
     setSelectedDate(date);
   };
 
   const handleQuickDateSelection = (offset: number) => {
-    const date = new Date();
-    date.setDate(date.getDate() + offset);
-    const [selectedDate, setSelectedDate] = useState<any>(null);
+    setSelectedDate(dayjs().add(offset, "day"));
   };
 
-  const isFormComplete = selectedDate && startTime && endTime;
+  const isFormComplete =
+    selectedDate?.isValid?.() &&
+    startTime.trim().length > 0 &&
+    endTime.trim().length > 0;
 
   const navigate = useNavigate();
 
@@ -45,24 +47,41 @@ const ChooseTime = () => {
 
       {/* Date Selection */}
       <div className="space-y-4">
-        <label className="text-[#6f4e37] text-base">Tanggal</label>
-        <Datepicker
-          value={selectedDate}
-          onChange={handleDateChange}
-          useRange={false}
-          asSingle={true}
-          displayFormat={"DD/MM/YYYY"}
-          classNames="w-full px-4 py-2 bg-[#f5f0e1] rounded-lg border border-[#6f4e37] text-[#6f4e37]"
-        />
+        <div className="flex items-center justify-center gap-2">
+          <Icon
+            icon="lets-icons:date-fill"
+            className="text-[#6f4e37] text-xl"
+          />
+          <label className="text-[#6f4e37] text-base">Tanggal</label>
+        </div>
+
+        <Space direction="vertical" className="w-full">
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            format="dddd, DD MMMM YYYY"
+            placeholder={dayjs().format("dddd, DD MMMM YYYY")}
+            className="w-full h-14 px-4 py-2 bg-[#f5f0e1] rounded-t-lg border-b border-[#6f4e37] text-[#a89f94] text-base font-normal tracking-wide"
+          />
+        </Space>
+
         <div className="flex gap-4">
           <button
-            className="flex-1 h-10 bg-[#e1dad2] rounded-sm text-[#b3aaa0] text-xs font-bold"
+            className={`flex-1 h-10 rounded-sm text-xs font-bold ${
+              selectedDate?.isSame(dayjs(), "day")
+                ? "bg-[#cbb99d] text-[#fffdf9]"
+                : "bg-[#e1dad2] text-[#b3aaa0]"
+            }`}
             onClick={() => handleQuickDateSelection(0)}
           >
             Hari Ini
           </button>
           <button
-            className="flex-1 h-10 bg-[#e1dad2] rounded-sm text-[#b3aaa0] text-xs font-bold"
+            className={`flex-1 h-10 rounded-sm text-xs font-bold ${
+              selectedDate?.isSame(dayjs().add(1, "day"), "day")
+                ? "bg-[#cbb99d] text-[#fffdf9]"
+                : "bg-[#e1dad2] text-[#b3aaa0]"
+            }`}
             onClick={() => handleQuickDateSelection(1)}
           >
             Besok
@@ -71,25 +90,31 @@ const ChooseTime = () => {
       </div>
 
       {/* Time Selection */}
-      <div className="space-y-4">
-        <label className="text-[#6f4e37] text-base">Jam</label>
+      <div className="space-y-0">
+        <div className="flex items-center justify-center gap-2">
+          <Icon icon="mdi:clock" className="text-[#6f4e37] text-xl" />
+          <label className="text-[#6f4e37] text-base">Waktu</label>
+        </div>
+
         <div className="flex gap-4">
-          <div className="flex-1">
-            <label className="text-[#6f4e37] text-xs">Mulai</label>
+          <div className="flex-1 flex flex-col items-center">
+            <label className="text-[#6f4e37] text-xs text-center">Mulai</label>
             <input
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-              className="w-full px-4 py-2 bg-[#f5f0e1] rounded-lg border border-[#6f4e37] text-[#6f4e37]"
+              className="w-full px-4 py-2 bg-white rounded-lg border border-[#6f4e37] text-[#6f4e37] text-center appearance-none"
             />
           </div>
-          <div className="flex-1">
-            <label className="text-[#6f4e37] text-xs">Selesai</label>
+          <div className="flex-1 flex flex-col items-center">
+            <label className="text-[#6f4e37] text-xs text-center">
+              Selesai
+            </label>
             <input
               type="time"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
-              className="w-full px-4 py-2 bg-[#f5f0e1] rounded-lg border border-[#6f4e37] text-[#6f4e37]"
+              className="w-full px-4 py-2 bg-white rounded-lg border border-[#6f4e37] text-[#6f4e37] text-center appearance-none"
             />
           </div>
         </div>
@@ -109,7 +134,14 @@ const ChooseTime = () => {
           }}
         >
           Lanjut Bayar
-          <Icon icon="ooui:next-ltr" className="text-[#b3aaa0] text-xl" />
+          <Icon
+            icon="ooui:next-ltr"
+            className={`text-[#b3aaa0] text-xl ${
+              isFormComplete
+                ? "text-[#f5f0e1]"
+                : "text-[#b3aaa0]"
+            }`}
+          />
         </button>
       </div>
     </div>

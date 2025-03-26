@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Quicksand:wght@300..700&display=swap');
 @import "tailwindcss";
-
 @source "../node_modules/flowbite-datepicker";
 
 .swiper-pagination {
@@ -17,4 +16,15 @@
 /* Active bullet */
 .swiper-pagination-bullet-active.custom-bullet-active {
   background-color: #6F4E37 !important; /* Coffee Brown */
+}
+
+/* Chrome, Safari, Edge */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* Firefox */
+input[type="time"] {
+  -moz-appearance: textfield;
 }
