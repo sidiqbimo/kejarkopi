@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +13,11 @@ const ChooseSeating = () => {
 
   const handleTableSelect = (tableId) => {
     setSelectedTable(tableId);
+
+    localStorage.setItem("selectedTable", tableId);
+
+    // Debugging print statement to verify selection
+    console.log("Selected Table: ", tableId);
   };
 
   const TableBlock = ({
@@ -55,7 +60,7 @@ const ChooseSeating = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#fffdf9] px-4 pb-32 space-y-6 max-w-[412px] mx-auto font-[Inter] relative">
+    <div className="min-h-screen bg-[#fffdf9] pb-32 space-y-6 max-w-[412px] mx-auto font-[Inter] relative">
       {/* Header */}
       <div className="w-full h-20 bg-[#f5f0e1] rounded-b-lg p-4 flex items-center gap-2 mt-0">
         <button
@@ -76,7 +81,7 @@ const ChooseSeating = () => {
       </div>
 
       {/* Seating Area */}
-      <div className="flex flex-col items-center gap-10 mt-16">
+      <div className="flex flex-col items-center gap-10 mt-16 px-4">
         {/* Top Row */}
         <div className="flex justify-center gap-24">
           {["1A", "1B"].map((id) => (

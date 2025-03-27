@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 
@@ -15,10 +15,11 @@ const ConfirmOrder = () => {
       id: 2,
       name: "Cappucino Hanupis",
       price: 15000,
-      qty: 2,
+      qty: 1,
       image: "/cappucino.png",
     },
   ]);
+  
 
   const handleQtyChange = (id: number, delta: number) => {
     setItems((prev) =>
@@ -34,8 +35,26 @@ const ConfirmOrder = () => {
 
   const navigate = useNavigate();
 
+  const handleConfirm = () => {
+    // Save order data to localStorage
+    const orderData = {
+      items: items, // The selected cart items
+      total: total, // Total price
+    };
+
+    // Store the order data in localStorage
+    localStorage.setItem("orderItems", JSON.stringify(orderData.items));
+    localStorage.setItem("orderTotal", orderData.total.toString());
+
+    console.log("Order Data Stored:", orderData);
+    
+    // Navigate to the seating page
+    navigate("/seating");
+  };
+
+
   return (
-    <div className="min-h-screen bg-[#fffdf9] px-4 pb-32 space-y-6 max-w-[412px] mx-auto font-[Inter] relative">
+    <div className="min-h-screen bg-[#fffdf9] pb-32 space-y-6 max-w-[412px] mx-auto font-[Inter] relative">
       {/* Header */}
       <div className="w-full h-20 bg-[#f5f0e1] rounded-b-lg p-4 flex items-center gap-2 mt-0">
         <button
@@ -57,38 +76,43 @@ const ConfirmOrder = () => {
         </div>
       </div>
 
-      {/* Item List */}
-      <div className="space-y-4">
-        {items.map((item) => (
-          <div key={item.id} className="flex items-center gap-4">
-            <img src={item.image} className="w-20 h-16 object-cover rounded" />
-            <div className="flex-1 flex flex-col gap-1">
-              <div className="text-[#6f4e37] font-bold text-base font-[Quicksand]">
-                {item.name}
+      <div className="px-4">
+        {/* Item List */}
+        <div className="space-y-4">
+          {items.map((item) => (
+            <div key={item.id} className="flex items-center gap-4">
+              <img
+                src={item.image}
+                className="w-20 h-16 object-cover rounded"
+              />
+              <div className="flex-1 flex flex-col gap-1">
+                <div className="text-[#6f4e37] font-bold text-base font-[Quicksand]">
+                  {item.name}
+                </div>
+                <div className="flex gap-2 text-xs text-[#cbb99d]">
+                  <span className="font-bold">{item.qty}x</span>
+                  <span>Rp {item.price.toLocaleString("id-ID")}</span>
+                </div>
               </div>
-              <div className="flex gap-2 text-xs text-[#cbb99d]">
-                <span className="font-bold">{item.qty}x</span>
-                <span>Rp {item.price.toLocaleString("id-ID")}</span>
+              {/* Quantity Control */}
+              <div className="bg-[#f5f0e1] rounded-lg outline outline-1 outline-[#2d2d2d] flex items-center gap-2 px-2 py-1">
+                <button
+                  onClick={() => handleQtyChange(item.id, -1)}
+                  className="w-8 h-8 flex items-center justify-center"
+                >
+                  <Icon icon="mdi:minus" className="text-[#6f4e37] text-xl" />
+                </button>
+                <div className="text-base text-[#2d2d2d]">{item.qty}</div>
+                <button
+                  onClick={() => handleQtyChange(item.id, 1)}
+                  className="w-8 h-8 flex items-center justify-center"
+                >
+                  <Icon icon="mdi:plus" className="text-[#6f4e37] text-xl" />
+                </button>
               </div>
             </div>
-            {/* Quantity Control */}
-            <div className="bg-[#f5f0e1] rounded-lg outline outline-1 outline-[#2d2d2d] flex items-center gap-2 px-2 py-1">
-              <button
-                onClick={() => handleQtyChange(item.id, -1)}
-                className="w-8 h-8 flex items-center justify-center"
-              >
-                <Icon icon="mdi:minus" className="text-[#6f4e37] text-xl" />
-              </button>
-              <div className="text-base text-[#2d2d2d]">{item.qty}</div>
-              <button
-                onClick={() => handleQtyChange(item.id, 1)}
-                className="w-8 h-8 flex items-center justify-center"
-              >
-                <Icon icon="mdi:plus" className="text-[#6f4e37] text-xl" />
-              </button>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Footer CTA */}
@@ -98,7 +122,7 @@ const ConfirmOrder = () => {
           <span className="font-bold">Rp {total.toLocaleString("id-ID")}</span>
         </div>
         <button
-          onClick={() => navigate("/seating")}
+          onClick={handleConfirm}
           className="w-full p-4 bg-[#6f4e37] text-[#f5f0e1] rounded-lg font-bold flex justify-center items-center gap-2"
         >
           Pilih Meja

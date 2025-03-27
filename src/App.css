@@ -1,6 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Quicksand:wght@300..700&display=swap');
 @import "tailwindcss";
 @source "../node_modules/flowbite-datepicker";
+@plugin "flyonui" {
+  themes: light --default;
+}
+
+:root {
+  --color-primary: #FFFDF9; /* Replace #yourDesiredColor with your preferred color code */
+}
+
+:root {
+  --color-primary: #FFFDF9; /* Replace #yourDesiredColor with your preferred color code */
+}
 
 .swiper-pagination {
   bottom: 32px !important; /* lift them up more */

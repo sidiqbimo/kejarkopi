@@ -8,7 +8,6 @@ const images = ["/carousel/c1.jpg", "/carousel/c2.jpg", "/carousel/c3.jpg"];
 
 const Home = () => {
   const navigate = useNavigate();
-  
 
   const [search, setSearch] = useState("");
 
@@ -99,9 +98,16 @@ const Home = () => {
     (sum, item) => sum + (cart[item.id] || 0) * item.price,
     0
   );
+  
+  const handleNavigateToConfirm = () => {
+    localStorage.setItem("orderItems", JSON.stringify(menuItems));
+    localStorage.setItem("orderTotal", total.toString());
+    localStorage.setItem("cartItems", JSON.stringify(cart));
+    navigate("/confirm");
+  }
 
   return (
-    <div className="min-h-screen bg-[#FFFDF9] px-4 pt-6 pb-24 space-y-6 font-[Inter] max-w-[412px] mx-auto">
+    <div className="min-h-screen bg-[#FFFDF9] pt-6 pb-24 space-y-6 font-[Inter] max-w-[412px] mx-auto">
       {/* 🔄 Dynamic Search Bar Container */}
       <div
         className="w-full h-[72px] transition-colors duration-500 -mt-6 mb-0 pt-4 pb-16 px-4"
@@ -210,70 +216,74 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Section Header */}
-      <div>
-        <h2
-          style={{ fontFamily: "Quicksand, sans-serif" }}
-          className="text-[#6F4E37] text-2xl font-bold"
-        >
-          Pesan Lagi
-        </h2>
-
-        <p className="w-96 mx-auto text-[#cbb99d] text-base font-normal font-[Inter]">
-          Paling sering kamu pesan
-        </p>
-      </div>
-
-      {/* Favorite Items */}
-      <div className="grid grid-cols-2 gap-x-4 gap-y-6 justify-center">
-        {menuItems.map((item, idx) => (
-          <div
-            key={item.id}
-            className="w-44 p-4 bg-[#f5f0e1] rounded-lg inline-flex flex-col justify-center items-center gap-2 overflow-hidden"
+      <div className="px-4">
+        {/* Section Header */}
+        <div>
+          <h2
+            style={{ fontFamily: "Quicksand, sans-serif" }}
+            className="text-[#6F4E37] text-2xl font-bold"
           >
-            <img
-              src={item.image}
-              alt={item.name}
-              className="self-stretch h-28 object-cover rounded"
-            />
+            Pesan Lagi
+          </h2>
 
-            <div className="self-stretch flex flex-col items-start gap-0.5">
-              <div className="text-[#6f4e37] text-base font-bold font-[Quicksand]">
-                {item.name}
+          <p className="w-96 text-[#cbb99d] text-base font-normal font-[Inter] mb-2">
+            Paling sering kamu pesan
+          </p>
+        </div>
+
+        {/* Favorite Items */}
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6 justify-center">
+          {menuItems.map((item, idx) => (
+            <div
+              key={item.id}
+              className="w-44 p-4 bg-[#f5f0e1] rounded-lg inline-flex flex-col justify-center items-center gap-2 overflow-hidden"
+            >
+              <img
+                src={item.image}
+                alt={item.name}
+                className="self-stretch h-28 object-cover rounded"
+              />
+
+              <div className="self-stretch flex flex-col items-start gap-0.5">
+                <div className="text-[#6f4e37] text-base font-bold font-[Quicksand]">
+                  {item.name}
+                </div>
+                <div className="text-[#cbb99d] text-xs font-normal font-[Inter]">
+                  Rp {item.price.toLocaleString("id-ID")}
+                </div>
               </div>
-              <div className="text-[#cbb99d] text-xs font-normal font-[Inter]">
-                Rp {item.price.toLocaleString("id-ID")}
-              </div>
+
+              {cart[item.id] ? (
+                <div className="self-stretch h-8 bg-[#f5f0e1] rounded-lg outline outline-1 outline-[#2d2d2d] flex items-center justify-between px-2">
+                  <button
+                    onClick={() => updateQty(item.id, -1)}
+                    className="w-8 h-8 flex items-center justify-center"
+                  >
+                    <Icon icon="mdi:minus" className="text-[#6f4e37] text-xl" />
+                  </button>
+
+                  <div className="text-[#2d2d2d] text-base">
+                    {cart[item.id]}
+                  </div>
+
+                  <button
+                    onClick={() => updateQty(item.id, 1)}
+                    className="w-8 h-8 flex items-center justify-center"
+                  >
+                    <Icon icon="mdi:plus" className="text-[#6f4e37] text-xl" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => addToCart(item.id)}
+                  className="self-stretch h-8 relative bg-[#cbb99d] rounded-sm overflow-hidden text-[#f5f0e1] text-s font-normal font-[Inter] flex items-center justify-center active:scale-[0.98] hover:brightness-95 transition-all duration-150"
+                >
+                  Pesan
+                </button>
+              )}
             </div>
-
-            {cart[item.id] ? (
-              <div className="self-stretch h-8 bg-[#f5f0e1] rounded-lg outline outline-1 outline-[#2d2d2d] flex items-center justify-between px-2">
-                <button
-                  onClick={() => updateQty(item.id, -1)}
-                  className="w-8 h-8 flex items-center justify-center"
-                >
-                  <Icon icon="mdi:minus" className="text-[#6f4e37] text-xl" />
-                </button>
-
-                <div className="text-[#2d2d2d] text-base">{cart[item.id]}</div>
-
-                <button
-                  onClick={() => updateQty(item.id, 1)}
-                  className="w-8 h-8 flex items-center justify-center"
-                >
-                  <Icon icon="mdi:plus" className="text-[#6f4e37] text-xl" />
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => addToCart(item.id)}
-                className="self-stretch h-8 relative bg-[#cbb99d] rounded-sm overflow-hidden text-[#f5f0e1] text-s font-normal font-[Inter] flex items-center justify-center active:scale-[0.98] hover:brightness-95 transition-all duration-150"
-              >
-                Pesan
-              </button>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Footer CTA */}
@@ -286,7 +296,7 @@ const Home = () => {
             </span>
           </div>
           <button
-            onClick={() => navigate("/confirm")}
+            onClick={handleNavigateToConfirm}
             className="w-full p-4 bg-[#6f4e37] text-[#f5f0e1] rounded-lg font-bold flex justify-center items-center gap-2"
           >
             Selanjutnya
