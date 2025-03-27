@@ -16,6 +16,7 @@ const Home = () => {
   const [search, setSearch] = useState("");
 
   const swiperRef = useRef<SwiperType | null>(null);
+  const [headerColor, setHeaderColor] = useState("#F5F0E1");
 
   const updateHeaderColor = (index: number) => {
     const img = new Image();
@@ -101,13 +102,13 @@ const Home = () => {
     (sum, item) => sum + (cart[item.id] || 0) * item.price,
     0
   );
-
+  
   const handleNavigateToConfirm = () => {
     localStorage.setItem("orderItems", JSON.stringify(menuItems));
     localStorage.setItem("orderTotal", total.toString());
     localStorage.setItem("cartItems", JSON.stringify(cart));
     navigate("/confirm");
-  };
+  }
 
   return (
     <div className="min-h-screen bg-[#FFFDF9] pt-6 pb-24 space-y-6 font-[Inter] max-w-[412px] mx-auto">
@@ -236,7 +237,7 @@ const Home = () => {
 
         {/* Favorite Items */}
         <div className="grid grid-cols-2 gap-x-4 gap-y-6 justify-center">
-          {menuItems.map((item) => (
+          {menuItems.map((item, idx) => (
             <div
               key={item.id}
               className="w-44 p-4 bg-[#f5f0e1] rounded-lg inline-flex flex-col justify-center items-center gap-2 overflow-hidden"
