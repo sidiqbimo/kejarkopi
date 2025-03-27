@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from "react";
+import {useState } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 
 const ChooseSeating = () => {
-  const [selectedTable, setSelectedTable] = useState(null);
+  const [selectedTable, setSelectedTable] = useState<string | null>(null);
 
-  const tables = [
-    { id: "1A", chairs: ["1A-1", "1A-2", "1A-3", "1A-4"] },
-    { id: "1B", chairs: ["1B-1", "1B-2", "1B-3", "1B-4"] },
-    { id: "1C", chairs: ["1C-1", "1C-2", "1C-3", "1C-4"] },
-  ];
 
-  const handleTableSelect = (tableId) => {
+  const handleTableSelect = (tableId: string) => {
     setSelectedTable(tableId);
 
     localStorage.setItem("selectedTable", tableId);
